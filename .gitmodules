@@ -1,6 +1,3 @@
 [submodule "Encoder"]
 path = lib/Encoder
 url = https://github.com/PaulStoffregen/Encoder
-[submodule "framedSerial"]
-path = lib/framedSerial
-url = https://gitlab.com/cemoke/framedSerial 
