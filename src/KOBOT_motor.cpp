@@ -115,23 +115,22 @@ void KOBOT_motor::PIDController()
   controlEffort = (b_0 * error
     + b_1 * error_z1 + b_2 * error_z2)*TICK_2_RAD;
   // sum with the prev. value of the effort
-  feedForwardCompensation();
   controlEffort += controlEffort_z1;
 
-  // // clamp the output if necessary
-  // if (abs(controlEffort) > MAX_EFFORT)
-  // {
-  //   if (controlEffort > 0)
-  //   {
-  //     controlEffort = MAX_EFFORT;
-  //   }
-  //   else if (controlEffort < 0)
-  //   {
-  //     controlEffort = -MAX_EFFORT;
-  //   }
-  //   // return without changing any values
-  //   return;
-  // }
+  // clamp the output if necessary
+  if (abs(controlEffort) > MAX_EFFORT)
+  {
+    if (controlEffort > 0)
+    {
+      controlEffort = MAX_EFFORT;
+    }
+    else if (controlEffort < 0)
+    {
+      controlEffort = -MAX_EFFORT;
+    }
+    // return without changing any values
+    return;
+  }
 
   // control voltage that is one period bacward shifted
   controlEffort_z1 = controlEffort;
@@ -231,22 +230,6 @@ void KOBOT_motor::checkErrorWindow()
   }
 }
 
-/*
-Compensate for constant disturbance by
-changing the controlEffort
-*/
-void KOBOT_motor::feedForwardCompensation()
-{
-  if (refVal > 0)
-  {
-    controlEffort += ffVal;
-  } 
-  else if (refVal < 0)
-  {
-    controlEffort -= ffVal;
-  } 
-}
-
 
 /*
 If step input slope is too high convert it to ramp
@@ -300,7 +283,7 @@ void KOBOT_motor::measureAverageVelocity()
   long currentPos = myEnc->read();
   int8_t posDiff = currentPos - prevPos;
 
-  if (abs(posDiff)>=0)
+  if (abs(posDiff)>=3)
   {
     // use micros for high velocity resoln.
     long currentTime = micros();
@@ -322,7 +305,7 @@ current value and previous value
 */
 int16_t KOBOT_motor::movingAverageFilter(int16_t currentVal)
 {
-  const float filterRatio = 0.2;
+  const float filterRatio = 0.4;
   static int16_t prevVal;
 
   measuredVal = int(float(prevVal) * (1.0-filterRatio) 

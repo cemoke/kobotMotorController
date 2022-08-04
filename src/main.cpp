@@ -244,16 +244,16 @@ void setup()
     Serial.begin(115200);
   #endif
   // When facing camera the one on the left is 8
-  Wire.begin(9);
+  Wire.begin(8);
   Wire.onReceive(receiveEvent);
   Wire.onRequest(requestEvent);
   motor.begin();
   motor.setEncoder(myEnc);
   // set default vals
   motor.f = 100;
-  motor.kp = 0.5;
-  motor.ki = 2.0;
-  motor.kd = 0.005;
+  motor.kp = 0.2;
+  motor.ki = 5.0;
+  motor.kd = 0.01;
   motor.mode = 0;
   #ifdef DEBUG
     // motor.refVal = 2000;
